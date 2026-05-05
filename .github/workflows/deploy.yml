@@ -1,0 +1,41 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 1. Log in to Azure using credentials stored in your GitHub secrets
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 2. Log in to your Azure Container Registry (ACR)
+    - name: ACR Login
+      run: |
+        az acr login --name ${{ secrets.ACR_NAME }}
+
+    # 3. Build and Push the Docker image
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/infopro-app:latest .
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/infopro-app:latest
+
+    # 4. Set AKS context to target your cluster
+    - name: Set AKS Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: rg-aks-prod
+        cluster-name: aks-cluster-prod
+
+    # 5. Deploy the application using the deployment.yaml
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment.yaml

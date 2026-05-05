@@ -15,6 +15,24 @@ module "vnet" {
   vnet_location       = azurerm_resource_group.rg.location
   address_space       = ["10.0.0.0/16"]
 }
+// Azure Container Registry
+# 1. Create the Private Azure Container Registry
+resource "azurerm_container_registry" "acr" {
+  name                = "acrforinfoproprod" # Name must be alphanumeric and unique in Azure
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Basic" # Cost-effective entry point for development
+  admin_enabled       = false   # Disabled because we use Managed Identity instead of passwords
+}
+
+# 2. Add Role Assignment so AKS can securely pull images from this ACR
+resource "azurerm_role_assignment" "aks_acr_pull" {
+  scope                            = azurerm_container_registry.acr.id
+  role_definition_name             = "AcrPull"
+  principal_id                     = module.identity.principal_id # Your Managed Identity
+  skip_service_principal_aad_check = true
+}
+
 
 // Identity Module
 resource "azurerm_resource_group" "aks_identity_rg" {

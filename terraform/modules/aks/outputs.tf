@@ -17,3 +17,7 @@ output "node_resource_group" {
   value       = azurerm_kubernetes_cluster.aks.node_resource_group
   description = "The auto-generated Resource Group containing the cluster's underlying infrastructure."
 }
+output "kubelet_identity_object_id" {
+  value       = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  description = "The Object ID of the kubelet's user-assigned managed identity."
+}

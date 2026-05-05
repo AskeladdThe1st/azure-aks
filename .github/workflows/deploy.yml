@@ -37,7 +37,7 @@ jobs:
       uses: azure/aks-set-context@v3
       with:
         resource-group: rg-aks-prod
-        cluster-name: aks-cluster-prod
+        cluster-name: my-aks-prod
 
     # 5. Deploy the application using the deployment.yaml
     - name: Deploy to Kubernetes

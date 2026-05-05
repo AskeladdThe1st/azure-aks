@@ -6,7 +6,7 @@ metadata:
   labels:
     app: infopro-app
 spec:
-  replicas: 2 # High Availability (stability requirement)
+  replicas: 1 # Set to 1 to match the single-node setup
   selector:
     matchLabels:
       app: infopro-app
@@ -17,11 +17,11 @@ spec:
     spec:
       containers:
       - name: web-app
-        image: <your-acr-name>.azurecr.io/infopro-app:latest # Replace with your ACR name
+        image: acrforinfoproprod.azurecr.io/infopro-app:latest
         ports:
         - containerPort: 80
 
-        # Self-healing probes (Fulfills the high operational stability requirement)
+        # High stability self-healing probes
         livenessProbe:
           httpGet:
             path: /
@@ -42,7 +42,7 @@ metadata:
   name: infopro-app-service
   namespace: default
 spec:
-  type: LoadBalancer # Automatically creates a public IP in Azure
+  type: LoadBalancer # Exposes your application to the internet
   ports:
   - port: 80
     targetPort: 80

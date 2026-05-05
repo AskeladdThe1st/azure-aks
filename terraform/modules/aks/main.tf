@@ -4,7 +4,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   resource_group_name = var.resource_group_name
   kubernetes_version = var.kubernetes_version
   dns_prefix          = var.dns_prefix
-  local_account_disabled = true
+  local_account_disabled = false
   oidc_issuer_enabled = true
   workload_identity_enabled = true
   oms_agent {
@@ -13,8 +13,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   default_node_pool {
     name       = "systempool"
-    node_count = 3
-    vm_size    = "Standard_D2s_v3"
+    node_count = 1
+    vm_size    = "Standard_DC2s_v3"
     os_disk_size_gb     = 128
     type                = "VirtualMachineScaleSets"
     enable_auto_scaling = false

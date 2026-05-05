@@ -24,7 +24,7 @@ variable "dns_prefix" {
 variable "kubernetes_version" {
   type        = string
   description = "The version of Kubernetes to use."
-  default     = "1.30"
+  default     = "1.33"
 }
 
 variable "identity_id" {
